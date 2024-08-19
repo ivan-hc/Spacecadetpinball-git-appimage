@@ -9,7 +9,7 @@ COMPILERS="base-devel"
 
 # CREATE THE APPDIR (DON'T TOUCH THIS)...
 if ! test -f ./appimagetool; then
-	wget -q "$(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | sed 's/"/ /g; s/ /\n/g' | grep -o 'https.*continuous.*tool.*86_64.*mage$')" -O appimagetool
+	wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
 	chmod a+x appimagetool
 fi
 mkdir -p $APP.AppDir
@@ -113,26 +113,26 @@ export UNION_PRELOAD=$HERE
 export JUNEST_HOME=$HERE/.junest
 export PATH=$PATH:$HERE/.local/share/junest/bin
 
-if test -f /etc/resolv.conf; then
-ETC_RESOLV=' --bind /etc/resolv.conf /etc/resolv.conf '; fi
-if test -d /media; then
-MNT_MEDIA_DIR=' --bind /media /media '; fi
-if test -d /mnt; then
-MNT_DIR=' --bind /mnt /mnt '; fi
-if test -d /opt; then
-OPT_DIR=' --bind /opt /opt '; fi
-if test -d /run/user; then
-USR_LIB_LOCALE_DIR=' --bind /usr/lib/locale /usr/lib/locale '; fi
-if test -d /usr/share/fonts; then
-USR_SHARE_FONTS_DIR=' --bind /usr/share/fonts /usr/share/fonts '; fi
-if test -d /usr/share/themes; then
-USR_SHARE_THEMES_DIR=' --bind /usr/share/themes /usr/share/themes '; fi
-
-BINDS=" $ETC_RESOLV $MNT_MEDIA_DIR $MNT_DIR $OPT_DIR $USR_LIB_LOCALE_DIR $USR_SHARE_FONTS_DIR $USR_SHARE_THEMES_DIR "
-
-if test -f $JUNEST_HOME/usr/lib/libselinux.so; then
-	export LD_LIBRARY_PATH=/lib/:/lib64/:/lib/x86_64-linux-gnu/:/usr/lib/:"${LD_LIBRARY_PATH}"
-fi
+BINDS=" --dev-bind /dev /dev \
+	--ro-bind /sys /sys \
+	--bind-try /tmp /tmp \
+	--proc /proc \
+	--ro-bind-try /etc/resolv.conf /etc/resolv.conf \
+	--ro-bind-try /etc/hosts /etc/hosts \
+	--ro-bind-try /etc/nsswitch.conf /etc/nsswitch.conf \
+	--ro-bind-try /etc/passwd /etc/passwd \
+	--ro-bind-try /etc/group /etc/group \
+	--ro-bind-try /etc/machine-id /etc/machine-id \
+	--ro-bind-try /etc/asound.conf /etc/asound.conf \
+	--ro-bind-try /etc/localtime /etc/localtime \
+	--bind-try /media /media \
+	--bind-try /mnt /mnt \
+	--bind-try /opt /opt \
+	--bind-try /usr/lib/locale /usr/lib/locale \
+	--bind-try /usr/share/fonts /usr/share/fonts \
+	--bind-try /usr/share/themes /usr/share/themes \
+	--bind-try /var /var \
+	"
 
 EXEC=$(grep -e '^Exec=.*' "${HERE}"/*.desktop | head -n 1 | cut -d "=" -f 2- | sed -e 's|%.||g')
 $HERE/.local/share/junest/bin/junest -n -b "$BINDS" -- $EXEC "$@"
@@ -347,10 +347,11 @@ mkdir -p ./$APP.AppDir/.junest/usr/lib/locale
 mkdir -p ./$APP.AppDir/.junest/usr/share/fonts
 mkdir -p ./$APP.AppDir/.junest/usr/share/themes
 mkdir -p ./$APP.AppDir/.junest/run/user
+rm -f ./"$APP".AppDir/.junest/etc/localtime && touch ./"$APP".AppDir/.junest/etc/localtime
 
 # CREATE THE APPIMAGE
 if test -f ./*.AppImage; then
 	rm -R -f ./*archimage*.AppImage
 fi
-ARCH=x86_64 VERSION=$(./appimagetool -v | grep -o '[[:digit:]]*') ./appimagetool -s ./$APP.AppDir
+ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 ./$APP.AppDir
 mv ./*AppImage ./"$(cat ./$APP.AppDir/*.desktop | grep 'Name=' | head -1 | cut -c 6- | sed 's/ /-/g')"_"$VERSION"-archimage3.4.1-1-x86_64.AppImage
