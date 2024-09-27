@@ -3,7 +3,7 @@
 # NAME OF THE APP BY REPLACING "SAMPLE"
 APP=spacecadetpinball-git
 BIN="SpaceCadetPinball"
-DEPENDENCES="ca-certificates alsa-lib flac fluidsynth glibc hidapi jack libdecor libgl libmodplug libpulse libusb libvorbis libx11 libxcursor libxext libxrender mpg123 opusfile pipewire sdl2 sdl2_mixer"
+DEPENDENCES="ca-certificates alsa-lib flac fluidsynth freepats-general-midi glibc hidapi jack libdecor libgl libmodplug libpulse libusb libvorbis libx11 libxcursor libxext libxrender mpg123 opusfile pipewire sdl2 sdl2_mixer"
 BASICSTUFF="binutils debugedit gzip"
 COMPILERS="base-devel"
 
