@@ -201,7 +201,7 @@ rm -R -f ./$APP.AppDir/.junest/var/* #REMOVE ALL PACKAGES DOWNLOADED WITH THE PA
 
 # SAVE FILES USING KEYWORDS
 BINSAVED="certificates sdl SDL" # Enter here keywords to find and save in /usr/bin
-SHARESAVED="certificates sdl SDL soundfonts" # Enter here keywords or file/folder names to save in both /usr/share and /usr/lib
+SHARESAVED="certificates sdl SDL" # Enter here keywords or file/folder names to save in both /usr/share and /usr/lib
 LIBSAVED="pk p11 alsa jack pipewire pulse sdl SDL" # Enter here keywords or file/folder names to save in /usr/lib
 
 # STEP 2, FUNCTION TO SAVE THE BINARIES IN /usr/bin THAT ARE NEEDED TO MADE JUNEST WORK, PLUS THE MAIN BINARY/BINARIES OF THE APP
