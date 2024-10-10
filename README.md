@@ -2,6 +2,8 @@ This repository creates and distributes the unofficial Appimage of Spacecadetpin
 
 From here you can download the scripts to build on top of [JuNest](https://github.com/fsquillace/junest), the lightweight Arch Linux based distro that runs, without root privileges, on top of any other Linux distro.
 
+NOTE: No "music" is included, only classic gameplay sounds (their inclusion may increase the package size by up to 8-9 times, see https://github.com/ivan-hc/Spacecadetpinball-git-appimage/issues/1).
+
 ---------------------------------
 
 ## Debugging and improvements
